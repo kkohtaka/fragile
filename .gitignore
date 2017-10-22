@@ -1,6 +1,5 @@
 # Copyright (C) 2017 Kazumasa Kohtaka <kkohtaka@gmail.com> All right reserved
 # This file is available under the MIT license.
 
-.terraform/
-*.tfstate*
-terraform.tfvars
+.DS_Store
+account.json

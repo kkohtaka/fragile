@@ -7,7 +7,7 @@ variable "region" {}
 provider "google" {
   # Generate `account.json` by following the description in
   # https://www.terraform.io/docs/providers/google/index.html#authentication-json-file
-  credentials = "${file("account.json")}"
+  credentials = "${file("../account.json")}"
 
   project = "${var.project}"
   region  = "${var.region}"
