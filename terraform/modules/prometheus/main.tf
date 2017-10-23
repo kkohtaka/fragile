@@ -43,7 +43,11 @@ resource "google_compute_instance" "prometheus" {
   }
 
   metadata {
-    system = "prometheus"
+    "os"     = "coreos"
+    "system" = "prometheus"
+
+    "block-project-ssh-keys" = "true"
+    "ssh-keys"               = "core:${file("~/.ssh/id_rsa.pub")}"
   }
 
   service_account {
