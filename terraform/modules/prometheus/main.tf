@@ -23,7 +23,7 @@ resource "google_compute_instance" "prometheus" {
   machine_type = "${var.machine_type}"
   zone         = "${var.zone}"
 
-  tags = []
+  tags = ["group-prometheus"]
 
   boot_disk {
     initialize_params {

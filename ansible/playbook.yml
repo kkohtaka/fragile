@@ -4,4 +4,9 @@
 - hosts: all
   gather_facts: False
   roles:
-  - defunctzombie.coreos-bootstrap
+  - role: defunctzombie.coreos-bootstrap
+
+- hosts: prometheus
+  become: True
+  roles:
+  - role: prometheus

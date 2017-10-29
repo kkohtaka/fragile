@@ -1,0 +1,26 @@
+# Copyright (C) 2017 Kazumasa Kohtaka <kkohtaka@gmail.com> All right reserved
+# This file is available under the MIT license.
+
+[Unit]
+Description=The Prometheus monitoring system and time series database
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=0
+Restart=always
+ExecStartPre=-/usr/bin/docker stop %n
+ExecStartPre=-/usr/bin/docker rm %n
+ExecStartPre=/usr/bin/docker pull {{ image_repository }}:{{ image_version }}
+ExecStart=/usr/bin/docker run \
+  --rm \
+  --name %n \
+  --publish 9090:9090 \
+  --volume /etc/prometheus:/etc/prometheus \
+  --volume /var/prometheus:/var/prometheus \
+  {{ image_repository }}:{{ image_version }} \
+  --config.file /etc/prometheus/config.yml \
+  --storage.tsdb.path /var/prometheus
+
+[Install]
+WantedBy=multi-user.target

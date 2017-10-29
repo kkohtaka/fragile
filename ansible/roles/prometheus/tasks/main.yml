@@ -1,0 +1,40 @@
+# Copyright (C) 2017 Kazumasa Kohtaka <kkohtaka@gmail.com> All right reserved
+# This file is available under the MIT license.
+
+- name: install prometheus.service
+  template:
+    src: templates/prometheus.service.j2
+    dest: /etc/systemd/system/prometheus.service
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart prometheus.service
+
+- name: create directories for prometheus.service
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: nobody
+    group: nogroup
+    mode: 0755
+  with_items:
+  - /etc/prometheus
+  - /var/prometheus
+
+- name: install a configuration file for prometheus.service
+  template:
+    src: templates/config.yml.j2
+    dest: /etc/prometheus/config.yml
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart prometheus.service
+
+- meta: flush_handlers
+
+- name: ensure prometheus.service is started
+  systemd:
+    name: prometheus.service
+    state: started
+    enabled: yes
+    daemon_reload: yes
