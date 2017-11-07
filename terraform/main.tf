@@ -13,6 +13,20 @@ provider "google" {
   region  = "${var.region}"
 }
 
+// HTTP Proxy
+
+module "http_loadbalancer" {
+  source                  = "./modules/http_loadbalancer"
+  default_service_link    = "${module.prometheus.service_link}"
+  prometheus_service_link = "${module.prometheus.service_link}"
+}
+
+// Backend Network
+
+module "backend_network" {
+  source = "./modules/backend_network"
+}
+
 // Prometheus
 
 module "prometheus" {
@@ -20,5 +34,5 @@ module "prometheus" {
   count        = 1
   machine_type = "n1-highmem-2"
   zone         = "${var.region}-a"
-  network      = "default"
+  network      = "${module.backend_network.link}"
 }
