@@ -3,6 +3,7 @@
 
 variable "project" {}
 variable "region" {}
+variable "dns_name" {}
 
 provider "google" {
   # Generate `account.json` by following the description in
@@ -13,10 +14,19 @@ provider "google" {
   region  = "${var.region}"
 }
 
+// DNS Managed Zone
+
+module "dns_zone" {
+  source   = "./modules/dns_zone"
+  dns_name = "${var.dns_name}"
+}
+
 // HTTP Proxy
 
 module "http_loadbalancer" {
   source                  = "./modules/http_loadbalancer"
+  dns_zone_name           = "${module.dns_zone.name}"
+  dns_name                = "${module.dns_zone.dns_name}"
   default_service_link    = "${module.prometheus.service_link}"
   prometheus_service_link = "${module.prometheus.service_link}"
 }
