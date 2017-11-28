@@ -6,6 +6,10 @@ variable "dns_name" {}
 resource "google_dns_managed_zone" "fragile" {
   name     = "fragile"
   dns_name = "${var.dns_name}"
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 output "name" {
