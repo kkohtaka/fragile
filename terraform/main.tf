@@ -5,6 +5,10 @@ variable "project" {}
 variable "region" {}
 variable "dns_name" {}
 
+variable "backend_network_name" {
+  default = "backend"
+}
+
 provider "google" {
   # Generate `account.json` by following the description in
   # https://www.terraform.io/docs/providers/google/index.html#authentication-json-file
@@ -35,6 +39,7 @@ module "http_loadbalancer" {
 
 module "backend_network" {
   source = "./modules/backend_network"
+  name   = "${var.backend_network_name}"
 }
 
 // Prometheus
@@ -44,5 +49,5 @@ module "prometheus" {
   count        = 1
   machine_type = "n1-highmem-2"
   zone         = "${var.region}-a"
-  network      = "${module.backend_network.link}"
+  network      = "${var.backend_network_name}"
 }

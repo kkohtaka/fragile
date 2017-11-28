@@ -1,8 +1,10 @@
 # Copyright (C) 2017 Kazumasa Kohtaka <kkohtaka@gmail.com> All right reserved
 # This file is available under the MIT license.
 
+variable "name" {}
+
 resource "google_compute_network" "backend" {
-  name = "backend"
+  name = "${var.name}"
 }
 
 resource "google_compute_firewall" "backend-default" {
