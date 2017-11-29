@@ -15,12 +15,10 @@ ExecStartPre=/usr/bin/docker pull {{ image_repository }}:{{ image_version }}
 ExecStart=/usr/bin/docker run \
   --rm \
   --name %p \
-  --publish 9090:9090 \
-  --volume /etc/prometheus:/etc/prometheus \
-  --volume /var/prometheus:/var/prometheus \
-  {{ image_repository }}:{{ image_version }} \
-  --config.file /etc/prometheus/config.yml \
-  --storage.tsdb.path /var/prometheus
+  --publish 8086:8086 \
+  --volume /etc/influxdb:/etc/influxdb \
+  --volume /var/lib/influxdb:/var/lib/influxdb \
+  {{ image_repository }}:{{ image_version }}
 
 [Install]
 WantedBy=multi-user.target

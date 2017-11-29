@@ -1,0 +1,9 @@
+# Copyright (C) 2017 Kazumasa Kohtaka <kkohtaka@gmail.com> All right reserved
+# This file is available under the MIT license.
+
+- name: restart influxdb.service
+  systemd:
+    name: influxdb.service
+    state: restarted
+    enabled: yes
+    daemon_reload: yes

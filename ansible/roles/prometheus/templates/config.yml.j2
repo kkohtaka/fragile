@@ -1,2 +1,23 @@
 # Copyright (C) 2017 Kazumasa Kohtaka <kkohtaka@gmail.com> All right reserved
 # This file is available under the MIT license.
+
+global:
+  scrape_interval: 5s
+  scrape_timeout: 5s
+  evaluation_interval: 5s
+
+scrape_configs:
+- job_name: prometheus
+  static_configs:
+  - targets:
+    - 127.0.0.1:9090
+
+remote_write:
+{% for influxdb in groups.influxdb %}
+- url: http://{{ hostvars[influxdb]['ansible_default_ipv4']['address'] }}:8086/api/v1/prom/write?db={{ metrics_database }}
+{% endfor %}
+
+remote_read:
+{% for influxdb in groups.influxdb %}
+- url: http://{{ hostvars[influxdb]['ansible_default_ipv4']['address'] }}:8086/api/v1/prom/read?db={{ metrics_database }}
+{% endfor %}

@@ -21,6 +21,12 @@
   - /etc/prometheus
   - /var/prometheus
 
+- name: gather information from influxdb group
+  setup:
+  delegate_to: "{{ item }}"
+  delegate_facts: true
+  with_items: "{{ groups.influxdb }}"
+
 - name: install a configuration file for prometheus.service
   template:
     src: templates/config.yml.j2

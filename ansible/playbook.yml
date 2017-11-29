@@ -10,3 +10,8 @@
   become: True
   roles:
   - role: prometheus
+
+- hosts: influxdb
+  become: True
+  roles:
+  - role: influxdb

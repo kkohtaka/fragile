@@ -1,0 +1,5 @@
+# Copyright (C) 2017 Kazumasa Kohtaka <kkohtaka@gmail.com> All right reserved
+# This file is available under the MIT license.
+
+image_repository: influxdb
+image_version: 1.4.2

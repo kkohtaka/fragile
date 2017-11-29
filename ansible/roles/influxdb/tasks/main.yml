@@ -1,0 +1,46 @@
+# Copyright (C) 2017 Kazumasa Kohtaka <kkohtaka@gmail.com> All right reserved
+# This file is available under the MIT license.
+
+- name: install influxdb.service
+  template:
+    src: templates/influxdb.service.j2
+    dest: /etc/systemd/system/influxdb.service
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart influxdb.service
+
+- name: create directories for influxdb.service
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  with_items:
+  - /etc/influxdb
+  - /var/lib/influxdb
+
+- name: install a configuration file for influxdb.service
+  template:
+    src: templates/influxdb.toml.j2
+    dest: /etc/influxdb/influxdb.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart influxdb.service
+
+- meta: flush_handlers
+
+- name: ensure influxdb.service is started
+  systemd:
+    name: influxdb.service
+    state: started
+    enabled: yes
+    daemon_reload: yes
+
+- name: create a database for metrics
+  shell: |
+    /usr/bin/docker exec \
+      influxdb \
+      influx -execute 'CREATE DATABASE {{ metrics_database }}'

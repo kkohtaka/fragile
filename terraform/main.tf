@@ -51,3 +51,13 @@ module "prometheus" {
   zone         = "${var.region}-a"
   network      = "${var.backend_network_name}"
 }
+
+// InfluxDB
+
+module "influxdb" {
+  source       = "./modules/influxdb"
+  count        = 3
+  machine_type = "n1-highmem-2"
+  zone         = "${var.region}-a"
+  network      = "${var.backend_network_name}"
+}
