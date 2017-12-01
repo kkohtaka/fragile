@@ -8,17 +8,27 @@ global:
 
 scrape_configs:
 - job_name: prometheus
-  static_configs:
-  - targets:
-    - 127.0.0.1:9090
+  gce_sd_configs:
+  - project: {{ gce_project }}
+    zone: {{ gce_zone }}
+    refresh_interval: 15s
+    port: 9090
+  relabel_configs:
+  - source_labels: [__meta_gce_metadata_system]
+    regex: prometheus
+    action: keep
+  - source_labels: [__meta_gce_metadata_system]
+    target_label: system
 
 - job_name: node-exporter
   gce_sd_configs:
   - project: {{ gce_project }}
     zone: {{ gce_zone }}
-    refresh_interval: 60s
+    refresh_interval: 15s
     port: 9100
-    tag_separator: ','
+  relabel_configs:
+  - source_labels: [__meta_gce_metadata_system]
+    target_label: system
 
 remote_write:
 {% for influxdb in groups.influxdb %}
