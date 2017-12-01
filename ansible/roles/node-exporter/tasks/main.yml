@@ -1,0 +1,13 @@
+# Copyright (C) 2017 Kazumasa Kohtaka <kkohtaka@gmail.com> All right reserved
+# This file is available under the MIT license.
+
+- name: install node-exporter.service
+  template:
+    src: templates/node-exporter.service.j2
+    dest: /etc/systemd/system/node-exporter.service
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart node-exporter.service
+
+- meta: flush_handlers

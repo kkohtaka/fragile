@@ -1,0 +1,23 @@
+# Copyright (C) 2017 Kazumasa Kohtaka <kkohtaka@gmail.com> All right reserved
+# This file is available under the MIT license.
+
+[Unit]
+Description=Exporter for machine metrics
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=0
+Restart=always
+ExecStartPre=-/usr/bin/docker stop %n
+ExecStartPre=-/usr/bin/docker rm %n
+ExecStartPre=/usr/bin/docker pull {{ image_repository }}:{{ image_version }}
+ExecStart=/usr/bin/docker run \
+  --rm \
+  --name %p \
+  --net host \
+  --pid host \
+  {{ image_repository }}:{{ image_version }}
+
+[Install]
+WantedBy=multi-user.target

@@ -6,6 +6,11 @@
   roles:
   - role: defunctzombie.coreos-bootstrap
 
+- hosts: all
+  become: True
+  roles:
+  - role: node-exporter
+
 - hosts: prometheus
   become: True
   roles:
