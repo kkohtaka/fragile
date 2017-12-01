@@ -12,6 +12,14 @@ scrape_configs:
   - targets:
     - 127.0.0.1:9090
 
+- job_name: node-exporter
+  gce_sd_configs:
+  - project: {{ gce_project }}
+    zone: {{ gce_zone }}
+    refresh_interval: 60s
+    port: 9100
+    tag_separator: ','
+
 remote_write:
 {% for influxdb in groups.influxdb %}
 - url: http://{{ hostvars[influxdb]['ansible_default_ipv4']['address'] }}:8086/api/v1/prom/write?db={{ metrics_database }}

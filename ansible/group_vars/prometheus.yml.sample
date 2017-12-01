@@ -1,0 +1,5 @@
+# Copyright (C) 2017 Kazumasa Kohtaka <kkohtaka@gmail.com> All right reserved
+# This file is available under the MIT license.
+
+gce_project: YOUR_GCE_PROJECT_ID
+gce_zone: YOUR_GCE_REGION

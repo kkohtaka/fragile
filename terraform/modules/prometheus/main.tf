@@ -43,6 +43,10 @@ resource "google_compute_instance_template" "prometheus" {
     "block-project-ssh-keys" = "true"
     "ssh-keys"               = "core:${file("~/.ssh/id_rsa.pub")}"
   }
+
+  service_account {
+    scopes = ["compute-ro"]
+  }
 }
 
 resource "google_compute_instance_group_manager" "prometheus" {
