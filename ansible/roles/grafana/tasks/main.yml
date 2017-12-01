@@ -1,0 +1,40 @@
+# Copyright (C) 2017 Kazumasa Kohtaka <kkohtaka@gmail.com> All right reserved
+# This file is available under the MIT license.
+
+- name: install grafana.service
+  template:
+    src: templates/grafana.service.j2
+    dest: /etc/systemd/system/grafana.service
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart grafana.service
+
+- name: create directories for grafana.service
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  with_items:
+  - /etc/grafana
+  - /var/lib/grafana
+
+- name: install a configuration file for grafana.service
+  template:
+    src: templates/grafana.ini.j2
+    dest: /etc/grafana/grafana.ini
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart grafana.service
+
+- meta: flush_handlers
+
+- name: ensure grafana.service is started
+  systemd:
+    name: grafana.service
+    state: started
+    enabled: yes
+    daemon_reload: yes

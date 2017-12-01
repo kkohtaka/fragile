@@ -5,6 +5,7 @@ variable "dns_zone_name" {}
 variable "dns_name" {}
 variable "default_service_link" {}
 variable "prometheus_service_link" {}
+variable "grafana_service_link" {}
 
 resource "google_compute_global_forwarding_rule" "fragile" {
   name       = "fragile"
@@ -22,6 +23,7 @@ resource "google_compute_url_map" "fragile" {
 
   default_service = "${var.default_service_link}"
 
+  // Prometheus
   host_rule {
     hosts        = ["prometheus.${var.dns_name}"]
     path_matcher = "prometheus"
@@ -30,6 +32,17 @@ resource "google_compute_url_map" "fragile" {
   path_matcher {
     name            = "prometheus"
     default_service = "${var.prometheus_service_link}"
+  }
+
+  // Grafana
+  host_rule {
+    hosts        = ["grafana.${var.dns_name}"]
+    path_matcher = "grafana"
+  }
+
+  path_matcher {
+    name            = "grafana"
+    default_service = "${var.grafana_service_link}"
   }
 }
 
@@ -45,6 +58,16 @@ resource "google_dns_record_set" "http_loadbalancer" {
 
 resource "google_dns_record_set" "prometheus" {
   name = "prometheus.${var.dns_name}"
+  type = "CNAME"
+  ttl  = 60
+
+  managed_zone = "${var.dns_zone_name}"
+
+  rrdatas = ["balancer.${var.dns_name}"]
+}
+
+resource "google_dns_record_set" "grafana" {
+  name = "grafana.${var.dns_name}"
   type = "CNAME"
   ttl  = 60
 

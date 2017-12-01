@@ -1,0 +1,9 @@
+# Copyright (C) 2017 Kazumasa Kohtaka <kkohtaka@gmail.com> All right reserved
+# This file is available under the MIT license.
+
+- name: restart grafana.service
+  systemd:
+    name: grafana.service
+    state: restarted
+    enabled: yes
+    daemon_reload: yes

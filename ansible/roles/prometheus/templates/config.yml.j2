@@ -20,6 +20,19 @@ scrape_configs:
   - source_labels: [__meta_gce_metadata_system]
     target_label: system
 
+- job_name: grafana
+  gce_sd_configs:
+  - project: {{ gce_project }}
+    zone: {{ gce_zone }}
+    refresh_interval: 15s
+    port: 3000
+  relabel_configs:
+  - source_labels: [__meta_gce_metadata_system]
+    regex: grafana
+    action: keep
+  - source_labels: [__meta_gce_metadata_system]
+    target_label: system
+
 - job_name: node-exporter
   gce_sd_configs:
   - project: {{ gce_project }}

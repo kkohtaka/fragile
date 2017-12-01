@@ -1,0 +1,24 @@
+; Copyright (C) 2017 Kazumasa Kohtaka <kkohtaka@gmail.com> All right reserved
+; This file is available under the MIT license.
+
+[server]
+root_url = {{ root_url }}
+
+[users]
+auto_assign_org_role = Admin
+default_theme = light
+
+[auth.anonymous]
+enabled = true
+org_role = Viewer
+
+[auth.github]
+enabled = true
+allow_sign_up = true
+client_id = {{ github_app_client_id }}
+client_secret = {{ github_app_client_secret }}
+scopes = user:email
+auth_url = https://github.com/login/oauth/authorize
+token_url = https://github.com/login/oauth/access_token
+api_url = https://api.github.com/user
+allowed_organizations = {{ github_allowed_organization }}

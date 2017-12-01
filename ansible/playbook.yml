@@ -16,6 +16,11 @@
   roles:
   - role: prometheus
 
+- hosts: grafana
+  become: True
+  roles:
+  - role: grafana
+
 - hosts: influxdb
   become: True
   roles:

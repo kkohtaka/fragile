@@ -1,0 +1,8 @@
+# Copyright (C) 2017 Kazumasa Kohtaka <kkohtaka@gmail.com> All right reserved
+# This file is available under the MIT license.
+
+root_url: YOUR_ROOT_URL
+
+github_app_client_id: YOUR_GITHUB_APP_CLIENT_ID
+github_app_client_secret: YOUR_GITHUB_APP_CLIENT_SECRET
+github_allowed_organization: ALLOWED_GITHUB_ORGANIZATION

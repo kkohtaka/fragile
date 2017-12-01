@@ -33,6 +33,7 @@ module "http_loadbalancer" {
   dns_name                = "${module.dns_zone.dns_name}"
   default_service_link    = "${module.prometheus.service_link}"
   prometheus_service_link = "${module.prometheus.service_link}"
+  grafana_service_link    = "${module.grafana.service_link}"
 }
 
 // Backend Network
@@ -48,6 +49,16 @@ module "prometheus" {
   source       = "./modules/prometheus"
   count        = 1
   machine_type = "n1-highmem-2"
+  zone         = "${var.region}-a"
+  network      = "${var.backend_network_name}"
+}
+
+// Grafana
+
+module "grafana" {
+  source       = "./modules/grafana"
+  count        = 1
+  machine_type = "g1-small"
   zone         = "${var.region}-a"
   network      = "${var.backend_network_name}"
 }
