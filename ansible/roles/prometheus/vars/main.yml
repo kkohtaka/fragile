@@ -2,4 +2,4 @@
 # This file is available under the MIT license.
 
 image_repository: quay.io/prometheus/prometheus
-image_version: v2.0.0-rc.1
+image_version: v2.0.0
