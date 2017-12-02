@@ -25,7 +25,7 @@ resource "google_compute_url_map" "fragile" {
 
   // Prometheus
   host_rule {
-    hosts        = ["prometheus.${var.dns_name}"]
+    hosts        = ["prometheus.${replace(var.dns_name, "/^(.+)\\./", "$1")}"]
     path_matcher = "prometheus"
   }
 
@@ -36,7 +36,7 @@ resource "google_compute_url_map" "fragile" {
 
   // Grafana
   host_rule {
-    hosts        = ["grafana.${var.dns_name}"]
+    hosts        = ["grafana.${replace(var.dns_name, "/^(.+)\\./", "$1")}"]
     path_matcher = "grafana"
   }
 
