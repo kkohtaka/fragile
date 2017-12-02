@@ -1,0 +1,51 @@
+# Copyright (C) 2017 Kazumasa Kohtaka <kkohtaka@gmail.com> All right reserved
+# This file is available under the MIT license.
+
+- name: copy mount file for {{ mount_name }}.mount
+  template:
+    src: templates/template.mount.j2
+    dest: /etc/systemd/system/{{ mount_name }}.mount
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+  - re-mount a block device
+  - restart node-exporter.service
+
+- name: copy service file for format-{{ device_name }}.service
+  template:
+    src: templates/template.service.j2
+    dest: /etc/systemd/system/format-{{ device_name }}.service
+    owner: root
+    group: root
+    mode: 0644
+  notify: re-format a block device
+
+- name: ensure a block device is formatted
+  systemd:
+    name: format-{{ device_name }}
+    state: started
+    enabled: yes
+    daemon_reload: yes
+
+- name: ensure a block device is mounted
+  systemd:
+    name: "{{ mount_name }}.mount"
+    state: started
+    enabled: yes
+    daemon_reload: yes
+
+- meta: flush_handlers
+
+- name: check if node-exporter.ervice exists
+  stat:
+    path: /etc/systemd/system/node-exporter.service
+  register: status
+
+- name: restart node-exporter.service
+  systemd:
+    name: node-exporter
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+  when: status.stat.exists

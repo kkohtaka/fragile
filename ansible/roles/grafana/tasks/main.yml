@@ -10,6 +10,13 @@
     mode: 0644
   notify: restart grafana.service
 
+- name: format and mount a block device
+  include_role:
+    name: mount-storage
+  vars:
+    block_device: /dev/disk/by-id/google-grafana
+    mount_path: /var/lib/grafana
+
 - name: create directories for grafana.service
   file:
     path: "{{ item }}"

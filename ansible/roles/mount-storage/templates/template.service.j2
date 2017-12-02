@@ -1,0 +1,17 @@
+# Copyright (C) 2017 Kazumasa Kohtaka <kkohtaka@gmail.com> All right reserved
+# This file is available under the MIT license.
+
+[Unit]
+Before={{ mount_name }}.mount
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+Environment=TARGET={{ block_device }}
+ExecStart=/bin/sh -c "if ! blkid|egrep ^$(readlink -f ${TARGET}); then \
+  /usr/sbin/wipefs -f ${TARGET}; \
+  /usr/sbin/mkfs.ext4 ${TARGET}; \
+fi"
+
+[Install]
+WantedBy=multi-user.target

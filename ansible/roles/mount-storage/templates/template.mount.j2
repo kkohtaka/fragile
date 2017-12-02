@@ -1,0 +1,13 @@
+# Copyright (C) 2017 Kazumasa Kohtaka <kkohtaka@gmail.com> All right reserved
+# This file is available under the MIT license.
+
+[Unit]
+Before=node-exporter.service
+
+[Mount]
+What={{ block_device }}
+Where={{ mount_path }}
+Type=ext4
+
+[Install]
+WantedBy=multi-user.target

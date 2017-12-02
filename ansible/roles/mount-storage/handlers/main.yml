@@ -1,0 +1,27 @@
+# Copyright (C) 2017 Kazumasa Kohtaka <kkohtaka@gmail.com> All right reserved
+# This file is available under the MIT license.
+
+- name: re-format a block device
+  systemd:
+    name: format-{{ device_name }}
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+
+- name: re-mount a block device
+  systemd:
+    name: "{{ mount_name }}.mount"
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+
+- name: restart node-exporter.service
+  systemd:
+    name: node-exporter
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+  register: restart_node_exporter_service
+  failed_when:
+  - restart_node_exporter_service.failed is defined
+  - restart_node_exporter_service.failed and ('Could not find the requested service' not in restart_node_exporter_service.msg)
