@@ -31,7 +31,7 @@ module "http_loadbalancer" {
   source                  = "./modules/http_loadbalancer"
   dns_zone_name           = "${module.dns_zone.name}"
   dns_name                = "${module.dns_zone.dns_name}"
-  default_service_link    = "${module.prometheus.service_link}"
+  default_service_link    = "${module.grafana.service_link}"
   prometheus_service_link = "${module.prometheus.service_link}"
   grafana_service_link    = "${module.grafana.service_link}"
 }
