@@ -26,6 +26,7 @@ resource "google_compute_instance_template" "influxdb" {
   disk {
     source_image = "coreos-cloud/coreos-stable"
     boot         = true
+    disk_size_gb = 60
   }
 
   network_interface {
