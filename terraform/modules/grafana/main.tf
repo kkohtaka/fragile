@@ -41,8 +41,8 @@ resource "google_compute_instance_template" "grafana" {
 
   disk {
     device_name = "grafana"
-    source = "${google_compute_disk.grafana.name}"
-    type   = "PERSISTENT"
+    source      = "${google_compute_disk.grafana.name}"
+    type        = "PERSISTENT"
 
     auto_delete = false
   }
