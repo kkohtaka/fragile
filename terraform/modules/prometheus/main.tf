@@ -13,7 +13,7 @@ variable "zone" {
   default = "asia-northeast1"
 }
 
-variable "network" {
+variable "subnetwork" {
   default = "default"
 }
 
@@ -29,7 +29,7 @@ resource "google_compute_instance_template" "prometheus" {
   }
 
   network_interface {
-    network = "${var.network}"
+    subnetwork = "${var.subnetwork}"
 
     access_config {
       // Ephemeral IP

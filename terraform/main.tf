@@ -6,6 +6,10 @@ variable "region" {}
 variable "dns_name" {}
 
 variable "backend_network_name" {
+  default = "fragile"
+}
+
+variable "backend_subnetwork_name" {
   default = "backend"
 }
 
@@ -18,11 +22,38 @@ provider "google" {
   region  = "${var.region}"
 }
 
+// CoreOS Ignition Bucket
+
+module "coreos_ignition" {
+  source   = "./modules/coreos_ignition"
+  location = "asia"
+}
+
 // DNS Managed Zone
 
 module "dns_zone" {
   source   = "./modules/dns_zone"
   dns_name = "${var.dns_name}"
+}
+
+// Backend Network
+
+module "backend_network" {
+  source          = "./modules/backend_network"
+  name            = "${var.backend_network_name}"
+  subnetwork_name = "${var.backend_subnetwork_name}"
+}
+
+// NAT Gateway
+
+module "natgateway" {
+  source        = "./modules/natgateway"
+  count         = 1
+  machine_type  = "f1-micro"
+  zone          = "${var.region}-a"
+  network       = "${var.backend_network_name}"
+  subnetwork    = "${var.backend_subnetwork_name}"
+  ip_cidr_range = "${module.backend_network.ipv4_range}"
 }
 
 // HTTP Proxy
@@ -36,13 +67,6 @@ module "http_loadbalancer" {
   grafana_service_link    = "${module.grafana.service_link}"
 }
 
-// Backend Network
-
-module "backend_network" {
-  source = "./modules/backend_network"
-  name   = "${var.backend_network_name}"
-}
-
 // Prometheus
 
 module "prometheus" {
@@ -50,7 +74,7 @@ module "prometheus" {
   count        = 1
   machine_type = "n1-highmem-2"
   zone         = "${var.region}-a"
-  network      = "${var.backend_network_name}"
+  subnetwork   = "${var.backend_subnetwork_name}"
 }
 
 // Grafana
@@ -60,7 +84,7 @@ module "grafana" {
   count        = 1
   machine_type = "g1-small"
   zone         = "${var.region}-a"
-  network      = "${var.backend_network_name}"
+  subnetwork   = "${var.backend_subnetwork_name}"
 }
 
 // InfluxDB
@@ -70,5 +94,5 @@ module "influxdb" {
   count        = 3
   machine_type = "n1-highmem-2"
   zone         = "${var.region}-a"
-  network      = "${var.backend_network_name}"
+  subnetwork   = "${var.backend_subnetwork_name}"
 }

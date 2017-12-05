@@ -2,14 +2,28 @@
 # This file is available under the MIT license.
 
 variable "name" {}
+variable "subnetwork_name" {}
 
-resource "google_compute_network" "backend" {
-  name = "${var.name}"
+// Network
+
+resource "google_compute_network" "primary" {
+  name                    = "${var.name}"
+  auto_create_subnetworks = "false"
 }
 
+// Subnetwork
+
+resource "google_compute_subnetwork" "backend" {
+  name          = "${var.subnetwork_name}"
+  ip_cidr_range = "192.168.0.0/20"
+  network       = "${google_compute_network.primary.self_link}"
+}
+
+// Firewalls
+
 resource "google_compute_firewall" "backend-default" {
-  name    = "backend-default"
-  network = "${google_compute_network.backend.name}"
+  name    = "fragile"
+  network = "${google_compute_network.primary.name}"
 
   allow {
     protocol = "icmp"
@@ -17,34 +31,23 @@ resource "google_compute_firewall" "backend-default" {
 
   allow {
     protocol = "tcp"
-    ports    = ["22", "3389"]
+    ports    = ["22"]
   }
 }
 
 resource "google_compute_firewall" "backend-internal" {
   name    = "backend-internal"
-  network = "${google_compute_network.backend.name}"
+  network = "${google_compute_network.primary.name}"
 
-  // Allow connections between internal instances
-  source_ranges = ["10.128.0.0/9"]
+  source_ranges = [
+    // Allow connections between internal instances
+    "${google_compute_subnetwork.backend.ip_cidr_range}",
 
-  allow {
-    protocol = "tcp"
-    ports    = ["0-65535"]
-  }
+    // Allow TCP connections from HTTP load balancers
+    "130.211.0.0/22",
 
-  allow {
-    protocol = "udp"
-    ports    = ["0-65535"]
-  }
-}
-
-resource "google_compute_firewall" "backend-web" {
-  name    = "backend-web"
-  network = "${google_compute_network.backend.name}"
-
-  // Allow TCP connections from HTTP load balancers
-  source_ranges = ["130.211.0.0/22", "35.191.0.0/16"]
+    "35.191.0.0/16",
+  ]
 
   allow {
     protocol = "tcp"
@@ -57,6 +60,6 @@ resource "google_compute_firewall" "backend-web" {
   }
 }
 
-output "link" {
-  value = "${google_compute_network.backend.self_link}"
+output "ipv4_range" {
+  value = "${google_compute_subnetwork.backend.ip_cidr_range}"
 }

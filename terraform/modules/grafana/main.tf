@@ -13,7 +13,7 @@ variable "zone" {
   default = "asia-northeast1"
 }
 
-variable "network" {
+variable "subnetwork" {
   default = "default"
 }
 
@@ -43,11 +43,12 @@ resource "google_compute_instance_template" "grafana" {
     device_name = "grafana"
     source = "${google_compute_disk.grafana.name}"
     type   = "PERSISTENT"
+
     auto_delete = false
   }
 
   network_interface {
-    network = "${var.network}"
+    subnetwork = "${var.subnetwork}"
 
     access_config {
       // Ephemeral IP

@@ -1,0 +1,33 @@
+{
+  "ignition": {
+    "version": "2.1.0"
+  },
+  "storage": {
+    "files": [
+      {
+        "filesystem": "root",
+        "path": "/etc/sysctl.d/nat.conf",
+        "contents": {
+          "source": "data:,net.ipv4.ip_forward%3D1"
+        },
+        "mode": 420
+      },
+      {
+        "filesystem": "root",
+        "path": "/var/lib/iptables/rules-save",
+        "contents": {
+          "source": "https://storage.googleapis.com/coreos-ignition/iptables-nat-rules"
+        },
+        "mode": 644
+      }
+    ]
+  },
+  "systemd": {
+    "units": [
+      {
+        "name": "iptables-restore.service",
+        "enabled": true
+      }
+    ]
+  }
+}
